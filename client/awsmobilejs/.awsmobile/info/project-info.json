@@ -1,0 +1,22 @@
+{
+	"ProjectName": "client",
+	"ProjectPath": "/Users/omri.maman/Workspace/Hackaton/AwesomeProject/client",
+	"SourceDir": "/Users/omri.maman/Workspace/Hackaton/AwesomeProject",
+	"DistributionDir": "build",
+	"BuildCommand": "npm run-script build",
+	"StartCommand": "npm run-script start",
+	"InitializationTime": "2018-01-24-12-12-43",
+	"LastConfigurationTime": "2018-01-24-12-12-55",
+	"LastNPMInstallTime": "",
+	"FrontendLastBuildTime": "",
+	"LastPublishTime": "",
+	"BackendFormat": "yml",
+	"BackendLastBuildTime": "",
+	"BackendLastUpdateTime": "",
+	"BackendLastUpdateSuccessful": false,
+	"BackendProjectID": "",
+	"BackendProjectName": "",
+	"BackendProjectConsoleUrl": "",
+	"BackendProjectCreationTime": "",
+	"BackendProjectLastUpdatedTime": ""
+}
