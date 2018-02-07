@@ -54,13 +54,42 @@ class UrlsList extends Component {
   }
 }
 
+
+class Results extends Component {
+  
+  constructor(props) {
+    super(props);
+  }
+
+  render() {
+    if(this.props.posts.length == 0 && this.props.files.length == 0){
+      return (
+        <ScrollView style={styles.contentContainer}>
+          <Text style={styles.singleItem3}></Text>
+          </ScrollView>
+      );
+    }
+    else{
+      return (
+          <ScrollView style={styles.contentContainer}>
+            <Text style={styles.singleItem3}>This is what we have found for you</Text>
+            <Text style={styles.singleItem4}>Quick Solush</Text>
+            <UrlsList urls={this.props.posts}/>
+            <Text style={styles.singleItem4}>Manuals</Text>
+            <UrlsList urls={this.props.files}/>
+          </ScrollView>
+      ); 
+    }
+  }
+}
+
+
+
 export default class App extends React.Component {
   
   constructor(props) {
     super(props);
-    this.state = { res : '',
-                    files: []};
-
+    this.state = { res : '', posts: [], files: []};
     this.getDataComprehend = this.getDataComprehend.bind(this);
     this.getAndParse = this.getAndParse.bind(this);
     this.getDataElastic = this.getDataElastic.bind(this);
@@ -90,22 +119,28 @@ export default class App extends React.Component {
       elasticRes.then((po)=>{
           
           var fileUrls2 = [];
-
-          for( j=0 ; j< po.hits.hits.length && j < 4  ; j++){
+          var postsFound = [];
+          var count = 0;
+          for( j=0 ; j< po.hits.hits.length  ; j++){
               var currentUrl = po.hits.hits[j]['_source']['fileurl'];
               var urlParts = currentUrl.split('/');
+              var currentFileName = urlParts[urlParts.length - 1];
               
-              fileUrls2.push({fileurl : po.hits.hits[j]['_source']['fileurl'], description : po.hits.hits[j]['_source']['Description'], name : urlParts[urlParts.length - 1] });
+              if(currentFileName.indexOf('Jh_1600') >= 0){
+                postsFound.push({fileurl : po.hits.hits[j]['_source']['fileurl'], description : po.hits.hits[j]['_source']['Description'], name : currentFileName });
+              }
+              else{
+                if(count < 4){
+                  count++
+                  fileUrls2.push({fileurl : po.hits.hits[j]['_source']['fileurl'], description : po.hits.hits[j]['_source']['Description'], name : currentFileName });
+                }
+              }
           }
 
-          this.setState({files: fileUrls2,
-                          res : ''});
-
-
+          this.setState({files: fileUrls2, res : '', posts: postsFound});
       });
     });
   }
-
 
   async getDataElastic(KeyPhrases) {
     
@@ -144,14 +179,12 @@ export default class App extends React.Component {
           </View>
           <View style={styles.containerV2}>
               <TextInput style={styles.searchInput} placeholder="Need Help?"
-                                    onChangeText={(text) => this.setState({ res: text})}
+                                    onChangeText={(text) => this.setState({ res: text,  posts: [], files: [] })}
                                     value= {this.state.res}/>
               <Button color="#fff" style={styles.action} title="GO" onPress={this.getAndParse}/>
           </View>
         </View>
-          <ScrollView style={styles.contentContainer}>
-            <UrlsList urls={this.state.files}/>
-          </ScrollView>
+        <Results posts={this.state.posts} files={this.state.files}/>
       </View>
     );
   }
@@ -248,6 +281,19 @@ const styles = StyleSheet.create({
     padding : 5,
     marginBottom:10,
     fontSize: 14,
+  },
+  singleItem3: {
+    textAlign: 'center',
+    padding : 5,
+    fontWeight: 'bold',
+    marginBottom:10,
+    fontSize: 15,
+  },
+  singleItem4: {
+    textAlign: 'center',
+    padding : 5,
+    marginBottom:10,
+    fontSize: 15,
   },
   singleItem2: {
     color: 'blue',
